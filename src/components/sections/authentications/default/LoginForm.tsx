@@ -1,30 +1,13 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import * as yup from 'yup';
 import PasswordTextField from 'components/common/PasswordTextField';
-import DefaultCredentialAlert from '../common/DefaultCredentialAlert';
-import ViewOnlyAlert from '../common/ViewOnlyAlert';
 
 interface LoginFormProps {
-  provider?: 'jwt' | 'firebase';
   handleLogin: (data: LoginFormValues) => any;
-  signUpLink: string;
-  socialAuth?: boolean;
   forgotPasswordLink?: string;
-  rememberDevice?: boolean;
   defaultCredential?: { email: string; password: string };
 }
 export interface LoginFormValues {
@@ -36,21 +19,13 @@ const schema = yup
   .object({
     email: yup
       .string()
-      .email('Please provide a valid email address.')
-      .required('This field is required'),
-    password: yup.string().required('This field is required'),
+      .email('Por favor, ingresa un correo electrónico válido.')
+      .required('Este campo es obligatorio.'),
+    password: yup.string().required('La contraseña es obligatoria.'),
   })
   .required();
 
-const LoginForm = ({
-  provider = 'jwt',
-  handleLogin,
-  signUpLink,
-  forgotPasswordLink,
-  socialAuth = true,
-  rememberDevice = true,
-  defaultCredential,
-}: LoginFormProps) => {
+const LoginForm = ({ handleLogin, forgotPasswordLink, defaultCredential }: LoginFormProps) => {
   const {
     register,
     handleSubmit,
@@ -74,29 +49,18 @@ const LoginForm = ({
       sx={{
         height: 1,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        pt: { md: 10 },
-        pb: 10,
+        justifyContent: 'center',
       }}
     >
-      <div />
-
       <Grid
         container
         sx={{
-          maxWidth: '35rem',
+          maxWidth: '40rem',
           rowGap: 4,
           p: { xs: 3, sm: 5 },
           mb: 5,
         }}
       >
-        {provider === 'firebase' && import.meta.env.VITE_BUILD_MODE === 'production' && (
-          <Grid size={12} sx={{ mb: 1 }}>
-            <ViewOnlyAlert
-              docLink={`https://aurora.themewagon.com/documentation/authentication#firebase`}
-            />
-          </Grid>
-        )}
         <Grid size={12}>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
@@ -106,27 +70,9 @@ const LoginForm = ({
               alignItems: { xs: 'flex-start', sm: 'flex-end' },
             }}
           >
-            <Typography variant="h4">Log in</Typography>
-            <Typography
-              variant="subtitle2"
-              sx={{
-                color: 'text.secondary',
-              }}
-            >
-              Don&apos;t have an account?
-              <Link href={signUpLink} sx={{ ml: 1 }}>
-                Sign up
-              </Link>
-            </Typography>
+            <Typography variant="h4">Inicia sesión para continuar</Typography>
           </Stack>
         </Grid>
-        {socialAuth && (
-          <>
-            <Grid size={12}>
-              <Divider sx={{ color: 'text.secondary' }}>or use email</Divider>
-            </Grid>
-          </>
-        )}
 
         <Grid size={12}>
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -135,7 +81,6 @@ const LoginForm = ({
                 {errors.root?.credential?.message}
               </Alert>
             )}
-            {defaultCredential && <DefaultCredentialAlert />}
             <Grid container>
               <Grid
                 sx={{
@@ -148,7 +93,9 @@ const LoginForm = ({
                   size="large"
                   id="email"
                   type="email"
-                  label="Email"
+                  label="Correo electrónico"
+                  placeholder="tu@correo.com"
+                  autoComplete="email"
                   defaultValue={defaultCredential?.email}
                   error={!!errors.email}
                   helperText={<>{errors.email?.message}</>}
@@ -165,7 +112,9 @@ const LoginForm = ({
                   fullWidth
                   size="large"
                   id="password"
-                  label="Password"
+                  label="Contraseña"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
                   defaultValue={defaultCredential?.password}
                   error={!!errors.password}
                   helperText={<>{errors.password?.message}</>}
@@ -185,25 +134,9 @@ const LoginForm = ({
                     alignItems: 'center',
                   }}
                 >
-                  {rememberDevice && (
-                    <FormControlLabel
-                      control={<Checkbox name="checked" color="primary" size="small" />}
-                      label={
-                        <Typography
-                          variant="subtitle2"
-                          sx={{
-                            color: 'text.secondary',
-                          }}
-                        >
-                          Remember this device
-                        </Typography>
-                      }
-                    />
-                  )}
-
                   {forgotPasswordLink && (
                     <Link href={forgotPasswordLink} variant="subtitle2">
-                      Forgot Password?
+                      ¿Olvidaste tu contraseña?
                     </Link>
                   )}
                 </Stack>
@@ -216,16 +149,13 @@ const LoginForm = ({
                   variant="contained"
                   loading={isSubmitting}
                 >
-                  Log in
+                  Iniciar sesión
                 </Button>
               </Grid>
             </Grid>
           </Box>
         </Grid>
       </Grid>
-      <Link href="#!" variant="subtitle2">
-        Trouble signing in?
-      </Link>
     </Stack>
   );
 };

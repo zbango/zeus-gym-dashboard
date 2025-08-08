@@ -47,11 +47,11 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
 
   const { isDark, setThemeMode } = useThemeMode();
 
-  const { sessionUser, signout } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Demo user data used for development purposes
-  const user = useMemo(() => sessionUser || demoUser, [sessionUser]);
-
+  const userData = useMemo(() => user || demoUser, [user]);
+  console.log('userData ', userData);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -61,7 +61,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
   };
 
   const handleSignout = () => {
-    signout();
+    signOut();
     navigate(paths.defaultLoggedOut);
     handleClose();
   };
@@ -85,9 +85,9 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
       ]}
     >
       <StatusAvatar
-        alt={user.name}
+        alt={'userData.name'}
         status="online"
-        src={user.avatar ?? undefined}
+        src={undefined}
         sx={[
           {
             width: 40,
@@ -104,7 +104,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
     <>
       {type === 'slim' && upSm ? (
         <Button color="neutral" variant="text" size="small" onClick={handleClick}>
-          {user.name}
+          USER DATA NAME
         </Button>
       ) : (
         menuButton
@@ -137,8 +137,8 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
         >
           <StatusAvatar
             status="online"
-            alt={user.name}
-            src={user.avatar ?? undefined}
+            alt={'userData.name'}
+            src={undefined}
             sx={{ width: 48, height: 48 }}
           />
           <Box>
@@ -149,31 +149,27 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
                 mb: 0.5,
               }}
             >
-              {user.name}
+              USER DATA NAME
             </Typography>
-            {user.designation && (
+            {/* {userData.designation && (
               <Typography
                 variant="subtitle2"
                 sx={{
                   color: 'warning.main',
                 }}
               >
-                {user.designation}
+                {userData.designation}
                 <IconifyIcon
                   icon="material-symbols:diamond-rounded"
                   color="warning.main"
                   sx={{ verticalAlign: 'text-bottom', ml: 0.5 }}
                 />
               </Typography>
-            )}
+            )} */}
           </Box>
         </Stack>
         <Divider />
         <Box sx={{ py: 1 }}>
-          <ProfileMenuItem icon="material-symbols:accessible-forward-rounded" onClick={handleClose}>
-            Accessibility
-          </ProfileMenuItem>
-
           <ProfileMenuItem icon="material-symbols:settings-outline-rounded" onClick={handleClose}>
             Preferences
           </ProfileMenuItem>
@@ -205,7 +201,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
         </Box>
         <Divider />
         <Box sx={{ py: 1 }}>
-          {sessionUser ? (
+          {user ? (
             <ProfileMenuItem onClick={handleSignout} icon="material-symbols:logout-rounded">
               Sign Out
             </ProfileMenuItem>

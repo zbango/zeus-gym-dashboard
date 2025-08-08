@@ -5,11 +5,11 @@ import AuthLayout from 'layouts/auth-layout';
 import DefaultAuthLayout from 'layouts/auth-layout/DefaultAuthLayout';
 import MainLayout from 'layouts/main-layout';
 import Page404 from 'pages/errors/Page404';
+import GuestGuard from 'components/guard/GuestGuard';
+import RequireAuth from 'components/guard/RequireAuth';
 import PageLoader from 'components/loading/PageLoader';
 import paths, { rootPaths } from './paths';
 
-// import AuthGurad from 'components/guard/AuthGuard';
-// import GuestGurad from 'components/guard/GuestGurad';
 // import Splash from 'components/loading/Splash';
 
 const Starter = lazy(() => import('pages/others/Starter'));
@@ -17,15 +17,8 @@ const Starter = lazy(() => import('pages/others/Starter'));
 const LoggedOut = lazy(() => import('pages/authentication/default/LoggedOut'));
 
 const Login = lazy(() => import('pages/authentication/default/jwt/Login'));
-const Signup = lazy(() => import('pages/authentication/default/jwt/Signup'));
 const ForgotPassword = lazy(() => import('pages/authentication/default/jwt/ForgotPassword'));
-const TwoFA = lazy(() => import('pages/authentication/default/jwt/TwoFA'));
 const SetPassword = lazy(() => import('pages/authentication/default/jwt/SetPassword'));
-const FirebaseLogin = lazy(() => import('pages/authentication/default/firebase/Login'));
-const FirebaseSignup = lazy(() => import('pages/authentication/default/firebase/Signup'));
-const FirebaseForgotPassword = lazy(
-  () => import('pages/authentication/default/firebase/ForgotPassword'),
-);
 
 export const SuspenseOutlet = () => {
   const location = useLocation();
@@ -50,13 +43,11 @@ export const routes: RouteObject[] = [
       {
         path: '/',
         element: (
-          // Uncomment the following line to activate the AuthGuard for protected routes
-
-          // <AuthGurad>
-          <MainLayout>
-            <SuspenseOutlet />
-          </MainLayout>
-          // </AuthGurad>
+          <RequireAuth>
+            <MainLayout>
+              <SuspenseOutlet />
+            </MainLayout>
+          </RequireAuth>
         ),
         children: [
           {
@@ -74,11 +65,9 @@ export const routes: RouteObject[] = [
       {
         path: rootPaths.authRoot,
         element: (
-          // Uncomment the following line to activate the GuestGurad for guest routes
-
-          // <GuestGurad>
-          <AuthLayout />
-          // </GuestGurad>
+          <GuestGuard>
+            <AuthLayout />
+          </GuestGuard>
         ),
         children: [
           {
@@ -89,46 +78,16 @@ export const routes: RouteObject[] = [
             ),
             children: [
               {
-                path: rootPaths.authDefaultJwtRoot,
-                children: [
-                  {
-                    path: paths.defaultJwtLogin,
-                    element: <Login />,
-                  },
-                  {
-                    path: paths.defaultJwtSignup,
-                    element: <Signup />,
-                  },
-                  {
-                    path: paths.defaultJwtForgotPassword,
-                    element: <ForgotPassword />,
-                  },
-                  {
-                    path: paths.defaultJwt2FA,
-                    element: <TwoFA />,
-                  },
-                  {
-                    path: paths.defaultJwtSetPassword,
-                    element: <SetPassword />,
-                  },
-                ],
+                path: paths.defaultJwtLogin,
+                element: <Login />,
               },
               {
-                path: rootPaths.authDefaultFirebaseRoot,
-                children: [
-                  {
-                    path: paths.defaultFirebaseLogin,
-                    element: <FirebaseLogin />,
-                  },
-                  {
-                    path: paths.defaultFirebaseSignup,
-                    element: <FirebaseSignup />,
-                  },
-                  {
-                    path: paths.defaultFirebaseForgotPassword,
-                    element: <FirebaseForgotPassword />,
-                  },
-                ],
+                path: paths.defaultJwtForgotPassword,
+                element: <ForgotPassword />,
+              },
+              {
+                path: paths.defaultJwtSetPassword,
+                element: <SetPassword />,
               },
               {
                 path: paths.defaultLoggedOut,

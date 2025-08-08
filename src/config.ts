@@ -33,6 +33,6 @@ export const initialConfig: Config = {
 };
 
 export const defaultJwtAuthCredentials = {
-  email: 'demo@aurora.com',
-  password: 'password123',
+  email: 'steven.tabang@gmail.com',
+  password: 'zeus123',
 };

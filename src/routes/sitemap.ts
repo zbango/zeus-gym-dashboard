@@ -62,27 +62,11 @@ const sitemap: MenuItem[] = [
         active: true,
       },
       {
-        name: 'Sign up',
-        key: 'sign_up',
-        icon: 'material-symbols:person-add-outline',
-        path: paths.defaultJwtSignup,
-        pathName: 'sign-up',
-        active: true,
-      },
-      {
         name: 'Forgot password',
         key: 'forgot_password',
         icon: 'material-symbols:key-outline',
         path: paths.defaultJwtForgotPassword,
         pathName: 'forgot-password',
-        active: true,
-      },
-      {
-        name: '2FA',
-        key: '2FA',
-        icon: 'material-symbols:enhanced-encryption-outline',
-        path: paths.defaultJwt2FA,
-        pathName: '2FA',
         active: true,
       },
       {

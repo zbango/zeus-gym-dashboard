@@ -56,11 +56,11 @@ const StackedSidenav = () => {
     return item.items.some(checkLink);
   };
 
-  const { sessionUser } = useAuth();
+  const { user } = useAuth();
 
   // Demo user data used for development purposes
-  const user = useMemo(() => sessionUser || demoUser, [sessionUser]);
-
+  const userData = useMemo(() => user || demoUser, [user]);
+  console.log('userData ', userData);
   const drawer = (
     <Box sx={{ flex: 1, overflow: 'hidden' }}>
       <Stack sx={{ height: 1 }}>
@@ -209,8 +209,8 @@ const StackedSidenav = () => {
               >
                 <StatusAvatar
                   status="online"
-                  alt={user.name}
-                  src={user.avatar || undefined}
+                  alt={'userData.name'}
+                  src={undefined}
                   sx={{ width: 36, height: 36 }}
                 />
                 <Typography
@@ -220,7 +220,7 @@ const StackedSidenav = () => {
                     textWrap: 'nowrap',
                   }}
                 >
-                  {user.name}
+                  EXPECT USER DATA NAME
                 </Typography>
                 <IconButton sx={{ ml: 'auto' }}>
                   <IconifyIcon icon="material-symbols:settings-outline" />
