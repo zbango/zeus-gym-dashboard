@@ -1,28 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from 'react';
+import { Outlet, useLocation } from 'react-router';
+import useIcons from 'hooks/useIcons';
+import { useThemeMode } from 'hooks/useThemeMode';
+import AuthProvider from 'providers/AuthProvider';
+import { useSettingsContext } from 'providers/SettingsProvider';
+import { REFRESH } from 'reducers/SettingsReducer';
+import SettingPanelToggler from 'components/settings-panel/SettingPanelToggler';
+import SettingsPanel from 'components/settings-panel/SettingsPanel';
 
-import supabase from "./lib/supabaseClient";
-
-function App() {
-  const [todos, setTodos] = useState<{ id: string; name: string }[]>([]);
+const App = () => {
+  const { pathname } = useLocation();
+  const { mode } = useThemeMode();
+  const { configDispatch } = useSettingsContext();
+  useIcons();
 
   useEffect(() => {
-    async function getTodos() {
-      const { data: todos } = await supabase.from("instruments").select();
-      if (todos && todos.length > 1) {
-        setTodos(todos);
-      }
-    }
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-    getTodos();
-  }, []);
+  useLayoutEffect(() => {
+    configDispatch({ type: REFRESH });
+  }, [mode]);
 
   return (
-    <div>
-      <h1>Todos</h1>
-      {todos.map((todo) => (
-        <li key={todo.id}>{todo.name}</li>
-      ))}
-    </div>
+    <AuthProvider>
+      <Outlet />
+      <SettingsPanel />
+      <SettingPanelToggler />
+    </AuthProvider>
   );
-}
+};
+
 export default App;
