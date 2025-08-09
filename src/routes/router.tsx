@@ -20,6 +20,10 @@ const Login = lazy(() => import('pages/authentication/default/jwt/Login'));
 const ForgotPassword = lazy(() => import('pages/authentication/default/jwt/ForgotPassword'));
 const SetPassword = lazy(() => import('pages/authentication/default/jwt/SetPassword'));
 
+// DASHBOARD
+const CustomersPage = lazy(() => import('pages/customers/Customers'));
+const UsersPage = lazy(() => import('pages/users/Users'));
+
 export const SuspenseOutlet = () => {
   const location = useLocation();
 
@@ -54,7 +58,14 @@ export const routes: RouteObject[] = [
             index: true,
             element: <Starter />,
           },
-
+          {
+            path: rootPaths.customersRoot,
+            element: <CustomersPage />,
+          },
+          {
+            path: rootPaths.staffRoot,
+            element: <UsersPage />,
+          },
           {
             path: '',
             element: <Page404 />,

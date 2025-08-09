@@ -34,14 +34,16 @@ Create `.env` (or `.env.local`) in project root:
 VITE_APP_PORT=5001
 VITE_BASENAME=/
 VITE_API_URL=http://localhost:8000/api
-# Only if you use Supabase. If not using, you can ignore these and the module is unused.
+# Supabase
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
+# Optional default tenant bootstrap in client
+VITE_DEFAULT_GYM_ID=00000000-0000-0000-0000-000000000000
 ```
 
 - Base path is controlled by `VITE_BASENAME` (wired in `vite.config.ts` and router basename).
 - API base URL is `VITE_API_URL` (used by Axios instance).
-- Supabase client will throw if imported without keys; it’s present but not referenced by default.
+- Supabase client will throw if missing keys.
 
 ### Tech stack
 
@@ -117,7 +119,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 Provider API (via `useSupabaseAuth()`):
 
 ```ts
-const { user, session, isInitializing, signInWithPassword, signUpWithPassword, signOut } = useSupabaseAuth();
+const { user, session, isInitializing, signInWithPassword, signUpWithPassword, signOut } =
+  useSupabaseAuth();
 ```
 
 Routing usage:
@@ -155,8 +158,62 @@ await signInWithPassword({ email, password });
 ```
 
 Notes:
+
 - Supabase SDK persists session and handles token refresh; the provider reflects that session into React state and guards.
 - If you still need legacy JWT API endpoints, see `src/services/swr/api-hooks/useAuthApi.ts` and `routes/paths.ts`.
+
+### Multi-tenant and RLS model
+
+- `public.user_profiles`: anchors `auth.users.id → gym_id, role` for Row Level Security checks
+- All domain tables include `gym_id` and use policies that check membership via `user_profiles`
+- On login the client ensures a profile row exists and loads it into context:
+  - Client code: `AuthSupabaseProvider.ensureAndLoadProfile()`
+  - Env: `VITE_DEFAULT_GYM_ID` used only as a bootstrap fallback
+
+SQL starter (see `src/db/initial_db_schema.sql`): tables `customers`, `plans`, `memberships`, `payments`, `attendance`, `staff`, plus `progress_events` for customer progress history. RLS is enabled on all domain tables.
+
+### Users module (Staff CRUD)
+
+- Page: `src/pages/users/Users.tsx`
+- Sections:
+  - `src/components/sections/users/UsersListContainer.tsx`
+  - `src/components/sections/users/UsersTable.tsx` (SWR-backed)
+  - `src/components/sections/users/CreateUserDialog.tsx`
+- Data hook: `src/hooks/useStaffList.ts` (SWR key `staff:list`)
+
+Create staff flow (admin-only):
+
+- Edge Function: `supabase/functions/admin-create-user-and-provision/index.ts`
+  - Creates or updates the Auth user by email and optional password
+  - Upserts `public.user_profiles` and inserts `public.staff` (unique on `(gym_id,user_id)`)
+- UI Dialog posts to the function and then `mutate('staff:list')` to refresh the table without a full reload
+
+Supabase setup for the function:
+
+1. Deploy edge function
+   - `supabase functions deploy admin-create-user-and-provision`
+2. Set function env vars
+   - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+3. Ensure DB constraints/policies
+   - `alter table public.staff add constraint uq_staff_gym_user unique (gym_id, user_id);`
+   - Enable RLS and self policies on `public.user_profiles` (see SQL file)
+
+### Customers module
+
+- Page: `src/pages/customers/Customers.tsx`
+- Sections mirror Users module and use MUI DataGrid
+- Optional progress tracking via `public.progress_events` (flexible JSON metrics + photo path), see SQL file
+
+### SWR data layer
+
+- Global config: `src/services/configuration/SWRConfiguration.tsx`
+- Example staff list hook: `src/hooks/useStaffList.ts`
+- Pattern: optimistic update via `mutate(key, updater, { revalidate: false })`, or fire-and-revalidate
+
+### Edge Functions (Supabase)
+
+- `admin-create-user-and-provision`: service-role function to create Auth user + provision domain rows.
+- CORS: function replies with permissive CORS headers; client includes `Authorization: Bearer VITE_SUPABASE_ANON_KEY`.
 
 ### Theming, settings, RTL, i18n
 

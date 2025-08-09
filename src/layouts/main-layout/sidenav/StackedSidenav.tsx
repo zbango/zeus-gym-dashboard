@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import {
   Backdrop,
@@ -21,7 +21,6 @@ import { cssVarRgba } from 'lib/utils';
 import { useAuth } from 'providers/AuthProvider';
 import { useBreakpoints } from 'providers/BreakpointsProvider';
 import { useSettingsContext } from 'providers/SettingsProvider';
-import { demoUser } from 'providers/auth-provider/AuthJwtProvider';
 import sitemap, { MenuItem, SubMenuItem } from 'routes/sitemap';
 import { sidenavVibrantStyle } from 'theme/styles/vibrantNav';
 import IconifyIcon from 'components/base/IconifyIcon';
@@ -56,10 +55,9 @@ const StackedSidenav = () => {
     return item.items.some(checkLink);
   };
 
-  const { user } = useAuth();
+  const { user: userData } = useAuth();
 
   // Demo user data used for development purposes
-  const userData = useMemo(() => user || demoUser, [user]);
   console.log('userData ', userData);
   const drawer = (
     <Box sx={{ flex: 1, overflow: 'hidden' }}>

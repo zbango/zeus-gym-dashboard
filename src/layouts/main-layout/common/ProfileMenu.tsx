@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Box,
@@ -21,8 +21,7 @@ import { useThemeMode } from 'hooks/useThemeMode';
 import { useAuth } from 'providers/AuthProvider';
 import { useBreakpoints } from 'providers/BreakpointsProvider';
 import { useSettingsContext } from 'providers/SettingsProvider';
-import { demoUser } from 'providers/auth-provider/AuthJwtProvider';
-import paths, { authPaths } from 'routes/paths';
+import paths from 'routes/paths';
 import IconifyIcon from 'components/base/IconifyIcon';
 import StatusAvatar from 'components/base/StatusAvatar';
 
@@ -47,10 +46,9 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
 
   const { isDark, setThemeMode } = useThemeMode();
 
-  const { user, signOut } = useAuth();
+  const { user: userData, signOut } = useAuth();
 
   // Demo user data used for development purposes
-  const userData = useMemo(() => user || demoUser, [user]);
   console.log('userData ', userData);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -201,15 +199,9 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
         </Box>
         <Divider />
         <Box sx={{ py: 1 }}>
-          {user ? (
-            <ProfileMenuItem onClick={handleSignout} icon="material-symbols:logout-rounded">
-              Sign Out
-            </ProfileMenuItem>
-          ) : (
-            <ProfileMenuItem href={authPaths.login} icon="material-symbols:login-rounded">
-              Sign In
-            </ProfileMenuItem>
-          )}
+          <ProfileMenuItem onClick={handleSignout} icon="material-symbols:logout-rounded">
+            Cerrar sesión
+          </ProfileMenuItem>
         </Box>
       </Menu>
     </>

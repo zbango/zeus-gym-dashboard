@@ -16,6 +16,8 @@ export const rootPaths = {
   emailRoot: 'email',
   kanbanRoot: 'kanban',
   appsRoot: 'apps',
+  customersRoot: 'customers',
+  staffRoot: 'users',
 };
 
 const paths = {
@@ -30,6 +32,10 @@ const paths = {
   notifications: `/${rootPaths.pagesRoot}/notifications`, //? update path
 
   404: `/${rootPaths.errorRoot}/404`,
+  productDetails: (productId?: string) =>
+    `/${rootPaths.ecommerceRoot}/${rootPaths.ecommerceCustomerRoot}/product-details${
+      productId ? `/${productId}` : ''
+    }`,
 };
 
 export const authPaths = {
