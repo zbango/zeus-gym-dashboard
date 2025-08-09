@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Button, Stack } from '@mui/material';
 import clsx from 'clsx';
-import sitemap, { MenuItem } from 'routes/sitemap';
+import { useSupabaseAuth } from 'providers/auth-provider/AuthSupabaseProvider';
+import { MenuItem, sitemapForRole } from 'routes/sitemap';
 import IconifyIcon from 'components/base/IconifyIcon';
 import { useNavContext } from '../NavProvider';
 import NavitemPopover from './NavItemPopover';
@@ -22,6 +23,10 @@ const TopnavItems = ({ type = 'default' }: TopnavItemsProps) => {
     setSelectedMenu(null);
   }, [pathname]);
 
+  const { profile, staff } = useSupabaseAuth();
+  const role = staff?.role || profile?.role;
+  const menus = sitemapForRole(role || undefined);
+
   return (
     <Stack
       sx={{
@@ -30,7 +35,7 @@ const TopnavItems = ({ type = 'default' }: TopnavItemsProps) => {
       }}
       className="nav-items"
     >
-      {sitemap.map((menu) => (
+      {menus.map((menu) => (
         <Button
           key={menu.id}
           variant="text"

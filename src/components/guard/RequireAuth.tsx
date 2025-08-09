@@ -2,12 +2,13 @@ import { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router';
 import { useSupabaseAuth } from 'providers/auth-provider/AuthSupabaseProvider';
 import paths from 'routes/paths';
+import PageLoader from 'components/loading/PageLoader';
 
 const RequireAuth = ({ children }: PropsWithChildren) => {
-  const { user, isInitializing } = useSupabaseAuth();
+  const { user, isInitializing, isProfileLoading, isStaffLoading } = useSupabaseAuth();
   const location = useLocation();
 
-  if (isInitializing) return null; // or a loader component
+  if (isInitializing || isProfileLoading || isStaffLoading) return <PageLoader />;
   if (!user) return <Navigate to={paths.defaultJwtLogin} state={{ from: location }} replace />;
   return children;
 };

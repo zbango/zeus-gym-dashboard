@@ -6,7 +6,8 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Toolbar from '@mui/material/Toolbar';
 import { useSettingsContext } from 'providers/SettingsProvider';
-import sitemap from 'routes/sitemap';
+import { useSupabaseAuth } from 'providers/auth-provider/AuthSupabaseProvider';
+import sitemap, { sitemapForRole } from 'routes/sitemap';
 import { sidenavVibrantStyle } from 'theme/styles/vibrantNav';
 import Logo from 'components/common/Logo';
 import VibrantBackground from 'components/common/VibrantBackground';
@@ -19,6 +20,10 @@ const SlimSidenav = () => {
     config: { sidenavCollapsed, drawerWidth, navColor, navigationMenuType },
   } = useSettingsContext();
   const { sidenavAppbarVariant } = useNavContext();
+
+  const { profile, staff } = useSupabaseAuth();
+  const role = staff?.role || profile?.role;
+  const menus = sitemapForRole(role || undefined);
 
   const drawer = (
     <>
@@ -56,7 +61,7 @@ const SlimSidenav = () => {
                 p: 2,
               }}
             >
-              {sitemap.map((menu, index) => (
+              {menus.map((menu, index) => (
                 <Fragment key={menu.id}>
                   <List
                     component="nav"

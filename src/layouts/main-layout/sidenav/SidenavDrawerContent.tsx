@@ -5,7 +5,8 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import Toolbar from '@mui/material/Toolbar';
 import { useSettingsContext } from 'providers/SettingsProvider';
-import sitemap from 'routes/sitemap';
+import { useSupabaseAuth } from 'providers/auth-provider/AuthSupabaseProvider';
+import { sitemapForRole } from 'routes/sitemap';
 import IconifyIcon from 'components/base/IconifyIcon';
 import Logo from 'components/common/Logo';
 import { useNavContext } from '../NavProvider';
@@ -24,6 +25,9 @@ const SidenavDrawerContent = ({ variant = 'permanent' }: SidenavDrawerContentPro
   } = useSettingsContext();
 
   const { sidenavAppbarVariant } = useNavContext();
+  const { profile, staff } = useSupabaseAuth();
+  const role = staff?.role || profile?.role;
+  const menus = sitemapForRole(role || undefined);
 
   const expanded = useMemo(
     () => variant === 'temporary' || (variant === 'permanent' && !sidenavCollapsed),
@@ -83,7 +87,7 @@ const SidenavDrawerContent = ({ variant = 'permanent' }: SidenavDrawerContentPro
               },
             ]}
           >
-            {sitemap.map((menu, index) => (
+            {menus.map((menu, index) => (
               <Box key={menu.id}>
                 {menu.subheader === 'Docs' && !sidenavCollapsed && (
                   <>
@@ -94,7 +98,7 @@ const SidenavDrawerContent = ({ variant = 'permanent' }: SidenavDrawerContentPro
                   dense
                   key={menu.id}
                   sx={{
-                    mb: index !== sitemap.length - 1 ? 3 : 0,
+                    mb: index !== menus.length - 1 ? 3 : 0,
                     pb: 0,
                     display: 'flex',
                     flexDirection: 'column',

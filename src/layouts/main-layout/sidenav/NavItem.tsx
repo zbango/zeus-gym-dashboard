@@ -41,7 +41,7 @@ const NavItem = ({ item, level }: NavItemProps) => {
     handleDrawerToggle,
   } = useSettingsContext();
 
-  const hasNestedItems = useMemo(() => Object.prototype.hasOwnProperty.call(item, 'items'), [item]);
+  const hasNestedItems = useMemo(() => Array.isArray(item.items) && item.items.length > 0, [item]);
   const isStackedSideNav = useMemo(() => upMd && sidenavType === 'stacked', [sidenavType, upMd]);
 
   const expandIcon = (
@@ -264,6 +264,8 @@ export default NavItem;
 const NavItemCollapse = ({ item, level }: NavItemCollapseProps) => {
   const { openItems } = useNavContext();
 
+  if (!Array.isArray(item.items) || item.items.length === 0) return null;
+
   return (
     <Collapse in={openItems[level] === item.pathName} timeout="auto" unmountOnExit>
       <List
@@ -271,7 +273,7 @@ const NavItemCollapse = ({ item, level }: NavItemCollapseProps) => {
         disablePadding
         sx={{ pl: level === 0 ? 4 : 2, display: 'flex', flexDirection: 'column', gap: '2px' }}
       >
-        {item.items!.map((nestedItem) => (
+        {item.items.map((nestedItem) => (
           <NavItem key={nestedItem.pathName} item={nestedItem} level={level + 1} />
         ))}
       </List>

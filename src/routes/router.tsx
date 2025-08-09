@@ -7,6 +7,7 @@ import MainLayout from 'layouts/main-layout';
 import Page404 from 'pages/errors/Page404';
 import GuestGuard from 'components/guard/GuestGuard';
 import RequireAuth from 'components/guard/RequireAuth';
+import RequireRole from 'components/guard/RequireRole';
 import PageLoader from 'components/loading/PageLoader';
 import paths, { rootPaths } from './paths';
 
@@ -64,7 +65,11 @@ export const routes: RouteObject[] = [
           },
           {
             path: rootPaths.staffRoot,
-            element: <UsersPage />,
+            element: (
+              <RequireRole roles={['admin']}>
+                <UsersPage />
+              </RequireRole>
+            ),
           },
           {
             path: '',

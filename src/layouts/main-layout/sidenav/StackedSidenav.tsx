@@ -21,7 +21,8 @@ import { cssVarRgba } from 'lib/utils';
 import { useAuth } from 'providers/AuthProvider';
 import { useBreakpoints } from 'providers/BreakpointsProvider';
 import { useSettingsContext } from 'providers/SettingsProvider';
-import sitemap, { MenuItem, SubMenuItem } from 'routes/sitemap';
+import { useSupabaseAuth } from 'providers/auth-provider/AuthSupabaseProvider';
+import sitemap, { MenuItem, SubMenuItem, sitemapForRole } from 'routes/sitemap';
 import { sidenavVibrantStyle } from 'theme/styles/vibrantNav';
 import IconifyIcon from 'components/base/IconifyIcon';
 import StatusAvatar from 'components/base/StatusAvatar';
@@ -56,6 +57,9 @@ const StackedSidenav = () => {
   };
 
   const { user: userData } = useAuth();
+  const { profile, staff } = useSupabaseAuth();
+  const role = staff?.role || profile?.role;
+  const menus = sitemapForRole(role || undefined);
 
   // Demo user data used for development purposes
   console.log('userData ', userData);
@@ -103,7 +107,7 @@ const StackedSidenav = () => {
                 py: 0,
               }}
             >
-              {sitemap.map((item) => (
+              {menus.map((item) => (
                 <ListItem
                   key={item.id}
                   sx={{

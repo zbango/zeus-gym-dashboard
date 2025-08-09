@@ -56,7 +56,8 @@ const AuthSupabaseProvider = ({ children }: PropsWithChildren) => {
       setIsProfileLoading(true);
       try {
         // Ensure a user_profiles row exists and aligns to the default gym
-        await supabase.rpc('ensure_profile', { _gym: DEFAULT_GYM_ID, _role: 'admin' });
+        // Default any new profile role to 'member' (authorization is driven by staff.role)
+        await supabase.rpc('ensure_profile', { _gym: DEFAULT_GYM_ID, _role: 'member' });
       } catch (error) {
         console.error('Error ensuring profile', error);
         // swallow; we will still attempt to read profile

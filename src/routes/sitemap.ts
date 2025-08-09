@@ -11,6 +11,7 @@ export interface SubMenuItem {
   icon?: string;
   iconSx?: SxProps;
   items?: SubMenuItem[];
+  roles?: string[]; // allowed roles; if omitted, visible to all
 }
 
 export interface MenuItem {
@@ -52,9 +53,26 @@ const sitemap: MenuItem[] = [
         pathName: 'users',
         icon: 'material-symbols:badge-outline',
         active: true,
+        roles: ['admin'],
       },
     ],
   },
 ];
 
 export default sitemap;
+
+export const sitemapForRole = (role?: string): MenuItem[] => {
+  const isAllowed = (item: SubMenuItem) =>
+    !item.roles || (role ? item.roles.includes(role) : false);
+
+  const filterItems = (items: SubMenuItem[] = []): SubMenuItem[] =>
+    items.filter(isAllowed).map((item) => ({
+      ...item,
+      items: item.items ? filterItems(item.items) : undefined,
+    }));
+
+  return sitemap.map((menu) => ({
+    ...menu,
+    items: filterItems(menu.items),
+  }));
+};
