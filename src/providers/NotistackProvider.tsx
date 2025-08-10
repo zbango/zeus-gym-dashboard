@@ -9,6 +9,7 @@ const NotistackProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <SnackbarProvider
+      autoHideDuration={3000}
       maxSnack={10}
       anchorOrigin={{
         horizontal: theme.direction === 'rtl' ? 'left' : 'right',

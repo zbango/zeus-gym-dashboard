@@ -5,6 +5,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
@@ -41,6 +42,7 @@ const AuthSupabaseProvider = ({ children }: PropsWithChildren) => {
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [staff, setStaff] = useState<StaffSummary | null>(null);
   const [isStaffLoading, setIsStaffLoading] = useState(false);
+  const lastLoadedUserIdRef = useRef<string | null>(null);
 
   const DEFAULT_GYM_ID =
     (import.meta.env.VITE_DEFAULT_GYM_ID as string | undefined) ||
@@ -51,6 +53,11 @@ const AuthSupabaseProvider = ({ children }: PropsWithChildren) => {
       if (!currentUser) {
         setProfile(null);
         setStaff(null);
+        return;
+      }
+
+      // Skip redundant bootstrap if we already loaded for this user id
+      if (lastLoadedUserIdRef.current === currentUser.id) {
         return;
       }
       setIsProfileLoading(true);
@@ -105,12 +112,12 @@ const AuthSupabaseProvider = ({ children }: PropsWithChildren) => {
       } finally {
         setIsStaffLoading(false);
       }
+      lastLoadedUserIdRef.current = currentUser.id;
     },
     [DEFAULT_GYM_ID],
   );
 
   useEffect(() => {
-    console.log('useEffect');
     let isMounted = true;
     supabase.auth
       .getSession()
@@ -125,10 +132,14 @@ const AuthSupabaseProvider = ({ children }: PropsWithChildren) => {
         if (isMounted) setIsInitializing(false);
       });
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
-      setUser(newSession?.user ?? null);
-      void ensureAndLoadProfile(newSession?.user ?? null);
+      const nextUser = newSession?.user ?? null;
+      setUser(nextUser);
+      // Avoid re-running full bootstrap on token refresh/initial session syncs
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        void ensureAndLoadProfile(nextUser);
+      }
     });
 
     return () => {

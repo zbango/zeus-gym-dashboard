@@ -1,153 +1,62 @@
 import { RefObject, useMemo } from 'react';
-import { useNavigate } from 'react-router';
-import { Box, Chip, ChipOwnProps, Link, Stack } from '@mui/material';
-import { DataGrid, GRID_CHECKBOX_SELECTION_COL_DEF, GridColDef } from '@mui/x-data-grid';
+import { Box, Stack, Typography } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { GridApiCommunity } from '@mui/x-data-grid/internals';
-import useNumberFormat from 'hooks/useNumberFormat';
-import paths from 'routes/paths';
-import Image from 'components/base/Image';
+import { esES } from '@mui/x-data-grid/locales';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { CustomerRow, useCustomers } from 'hooks/useCustomers';
+import TableRowMenuOptions from 'components/base/TableRowMenuOptions';
 import DataGridPagination from 'components/pagination/DataGridPagination';
-import DashboardMenu from 'components/sections/common/DashboardMenu';
-
-interface IImage {
-  color?: string;
-  src: string;
-}
-
-export interface ProductListAdmin {
-  id: number;
-  name: string;
-  image: IImage;
-  category: string;
-  status: 'active' | 'inactive' | 'draft' | 'archive';
-  price: {
-    regular: number;
-    discounted: number;
-  };
-  vendor: string;
-  stock: number;
-  publishedAt: string;
-}
-
-const getStatusBadgeColor = (val: string): ChipOwnProps['color'] => {
-  switch (val) {
-    case 'active':
-      return 'success';
-    case 'inactive':
-      return 'neutral';
-    case 'draft':
-      return 'warning';
-    case 'archive':
-      return 'error';
-    default:
-      return 'primary';
-  }
-};
-
-const zeroPad = (num: number, places: number) => String(num).padStart(places, '0');
 
 const defaultPageSize = 8;
 
-interface ProductsTableProps {
+interface CustomersTableProps {
   apiRef: RefObject<GridApiCommunity | null>;
   filterButtonEl: HTMLButtonElement | null;
 }
 
-const ProductsTable = ({ apiRef, filterButtonEl }: ProductsTableProps) => {
-  const { currencyFormat } = useNumberFormat();
-  const navigate = useNavigate();
-  const columns: GridColDef<ProductListAdmin>[] = useMemo(
+const CustomersTable = ({ apiRef, filterButtonEl }: CustomersTableProps) => {
+  const { data: rows = [] } = useCustomers(100);
+  dayjs.locale('es');
+  dayjs.extend(relativeTime);
+
+  const columns: GridColDef<CustomerRow>[] = useMemo(
     () => [
       {
-        ...GRID_CHECKBOX_SELECTION_COL_DEF,
-        width: 64,
-      },
-      {
-        field: 'name',
+        field: 'first_name',
         headerName: 'Cliente',
-        minWidth: 500,
+        minWidth: 320,
         flex: 1,
+        renderCell: (params) => (
+          <Stack>
+            <Typography variant="subtitle2">
+              {params.row.first_name} {params.row.last_name}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {params.row.email}
+            </Typography>
+          </Stack>
+        ),
+      },
+      { field: 'phone', headerName: 'Teléfono', minWidth: 180 },
+      {
+        field: 'created_at',
+        headerName: 'Fecha de registro',
+        minWidth: 220,
         renderCell: (params) => {
+          const d = dayjs(params.row.created_at);
           return (
-            <Stack
-              spacing={1.25}
-              sx={{
-                alignItems: 'center',
-              }}
-            >
-              <Image
-                src={params.row.image.src}
-                alt={params.row.name}
-                onClick={() => navigate(paths.productDetails(String(params.row.id)))}
-                sx={{ cursor: 'pointer' }}
-                height={48}
-                width={48}
-              />
-              <Link
-                href={paths.productDetails(String(params.row.id))}
-                variant="subtitle2"
-                sx={{ fontWeight: 400 }}
-              >
-                {params.row.name}
-              </Link>
+            <Stack>
+              <Typography variant="body2">{d.format('DD/MM/YYYY HH:mm')}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {d.fromNow()}
+              </Typography>
             </Stack>
           );
         },
-      },
-      {
-        field: 'category',
-        headerName: 'Category',
-        minWidth: 148,
-        renderCell: (params) => {
-          return <Chip label={params.row.category} variant="soft" color="neutral" />;
-        },
-      },
-      {
-        field: 'price',
-        headerName: 'Price',
-        minWidth: 80,
-        valueGetter: ({ discounted }) => discounted,
-        renderCell: ({ row: { price } }) => currencyFormat(price.discounted),
-      },
-      {
-        field: 'status',
-        headerName: 'Status',
-        minWidth: 148,
-        renderCell: (params) => {
-          return (
-            <Chip
-              label={params.row.status}
-              variant="soft"
-              color={getStatusBadgeColor(params.row.status)}
-              sx={{ textTransform: 'capitalize' }}
-            />
-          );
-        },
-      },
-      {
-        field: 'stock',
-        headerName: 'Inventory',
-        minWidth: 108,
-        renderCell: (params) => zeroPad(params.row.stock, 2),
-      },
-      {
-        field: 'vendor',
-        headerName: 'Vendor',
-        minWidth: 200,
-        renderCell: (params) => {
-          return (
-            <Link variant="subtitle2" href="#!" sx={{ fontWeight: 400 }}>
-              {params.row.vendor}
-            </Link>
-          );
-        },
-      },
-      {
-        field: 'publishedAt',
-        headerName: 'Fecha de registro',
-        minWidth: 130,
-        filterable: false,
-        renderCell: (params) => params.row.publishedAt,
+        sortComparator: (v1, v2) => dayjs(v1 ?? 0).valueOf() - dayjs(v2 ?? 0).valueOf(),
       },
       {
         field: 'action',
@@ -157,38 +66,36 @@ const ProductsTable = ({ apiRef, filterButtonEl }: ProductsTableProps) => {
         width: 60,
         align: 'right',
         headerAlign: 'right',
-        renderCell: () => <DashboardMenu />,
+        renderCell: () => (
+          <TableRowMenuOptions
+            menuItems={[
+              { label: 'Ver', onClick: () => {} },
+              { label: 'Editar', onClick: () => {} },
+              { label: 'Eliminar', sx: { color: 'error.main' }, onClick: () => {} },
+            ]}
+          />
+        ),
       },
     ],
-    [currencyFormat],
+    [],
   );
+
   return (
     <Box sx={{ width: 1 }}>
       <DataGrid
+        localeText={esES.components.MuiDataGrid.defaultProps.localeText}
         rowHeight={64}
-        rows={[]}
+        rows={rows}
+        getRowId={(r) => r.id}
         apiRef={apiRef}
         columns={columns}
         pageSizeOptions={[defaultPageSize, 15]}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: defaultPageSize,
-            },
-          },
-        }}
-        checkboxSelection
-        slots={{
-          basePagination: (props) => <DataGridPagination showFullPagination {...props} />,
-        }}
-        slotProps={{
-          panel: {
-            target: filterButtonEl,
-          },
-        }}
+        initialState={{ pagination: { paginationModel: { pageSize: defaultPageSize } } }}
+        slots={{ basePagination: (props) => <DataGridPagination showFullPagination {...props} /> }}
+        slotProps={{ panel: { target: filterButtonEl } }}
       />
     </Box>
   );
 };
 
-export default ProductsTable;
+export default CustomersTable;

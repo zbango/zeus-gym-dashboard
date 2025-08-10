@@ -19,6 +19,7 @@ export function useStaffList(limit = 100) {
       const { data, error } = await supabase
         .from('staff')
         .select('id,name,role,phone,email,created_at')
+        .eq('active', true)
         .order('created_at', { ascending: false })
         .limit(limit);
       if (error) throw error;

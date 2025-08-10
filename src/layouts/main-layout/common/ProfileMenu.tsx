@@ -46,7 +46,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
 
   const { isDark, setThemeMode } = useThemeMode();
 
-  const { user: userData, signOut } = useAuth();
+  const { user: userData, signOut, staff } = useAuth();
 
   // Demo user data used for development purposes
   console.log('userData ', userData);
@@ -102,7 +102,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
     <>
       {type === 'slim' && upSm ? (
         <Button color="neutral" variant="text" size="small" onClick={handleClick}>
-          USER DATA NAME
+          {staff?.name}
         </Button>
       ) : (
         menuButton
@@ -147,7 +147,7 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
                 mb: 0.5,
               }}
             >
-              USER DATA NAME
+              {staff?.name}
             </Typography>
             {/* {userData.designation && (
               <Typography
@@ -168,15 +168,11 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
         </Stack>
         <Divider />
         <Box sx={{ py: 1 }}>
-          <ProfileMenuItem icon="material-symbols:settings-outline-rounded" onClick={handleClose}>
-            Preferences
-          </ProfileMenuItem>
-
           <ProfileMenuItem
             onClick={() => setThemeMode()}
             icon="material-symbols:dark-mode-outline-rounded"
           >
-            Dark mode
+            Modo oscuro
             <Switch checked={isDark} onChange={() => setThemeMode()} sx={{ ml: 'auto' }} />
           </ProfileMenuItem>
         </Box>
@@ -187,14 +183,14 @@ const ProfileMenu = ({ type = 'default' }: ProfileMenuProps) => {
             onClick={handleClose}
             href="#!"
           >
-            Account Settings
+            Configuración de la cuenta
           </ProfileMenuItem>
           <ProfileMenuItem
             icon="material-symbols:question-mark-rounded"
             onClick={handleClose}
             href="#!"
           >
-            Help Center
+            Centro de ayuda
           </ProfileMenuItem>
         </Box>
         <Divider />

@@ -4,10 +4,10 @@ import Grid from '@mui/material/Grid';
 import { useGridApiRef } from '@mui/x-data-grid';
 import IconifyIcon from 'components/base/IconifyIcon';
 import StyledTextField from 'components/styled/StyledTextField';
-import UserDialog from './UserDialog';
-import UsersTable from './UsersTable';
+import PlansDialog from './PlansDialog';
+import PlansTable from './PlansTable';
 
-const UsersListContainer = () => {
+const PlansListContainer = () => {
   const [filterButtonEl, setFilterButtonEl] = useState<HTMLButtonElement | null>(null);
   const apiRef = useGridApiRef();
   const [openCreate, setOpenCreate] = useState(false);
@@ -49,13 +49,13 @@ const UsersListContainer = () => {
                 sx={{ flexShrink: 0 }}
                 onClick={() => setOpenCreate(true)}
               >
-                Nuevo usuario
+                Nuevo plan
               </Button>
               <StyledTextField
                 id="search-box"
                 type="search"
                 fullWidth
-                placeholder="Buscar usuario"
+                placeholder="Buscar plan"
                 onChange={handleSearch}
                 slotProps={{
                   input: {
@@ -70,7 +70,7 @@ const UsersListContainer = () => {
                   },
                 }}
                 sx={{
-                  maxWidth: { sm: 360, xl: 360 },
+                  maxWidth: { sm: 360, xl: 220 },
                   mr: { sm: 4, md: 11, lg: 0 },
                   order: { xs: 1, sm: 0 },
                 }}
@@ -88,11 +88,11 @@ const UsersListContainer = () => {
         </Stack>
       </Grid>
       <Grid size={12}>
-        <UsersTable apiRef={apiRef} filterButtonEl={filterButtonEl} />
+        <PlansTable apiRef={apiRef} filterButtonEl={filterButtonEl} />
       </Grid>
-      <UserDialog open={openCreate} onClose={() => setOpenCreate(false)} mode="create" />
+      <PlansDialog open={openCreate} onClose={() => setOpenCreate(false)} mode="create" />
     </Grid>
   );
 };
 
-export default UsersListContainer;
+export default PlansListContainer;

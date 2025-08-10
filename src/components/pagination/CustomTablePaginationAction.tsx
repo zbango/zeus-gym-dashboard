@@ -51,7 +51,7 @@ const CustomTablePaginationAction = ({
         onClick={onShowAllClick}
         sx={{ fontWeight: 700, flexShrink: 0, mt: { sm: 0.5 } }}
       >
-        {isShowingAll ? 'View less' : 'Show all'}
+        {isShowingAll ? 'Ver menos' : 'Ver todos'}
       </Link>
 
       {showFullPagination ? (
@@ -91,7 +91,7 @@ const CustomTablePaginationAction = ({
             }}
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline-block' } }}>
-              Previous
+              Anterior
             </Box>
           </Button>
           <Button
@@ -115,7 +115,7 @@ const CustomTablePaginationAction = ({
             }}
           >
             <Box component="span" sx={{ display: { xs: 'none', sm: 'inline-block' } }}>
-              Next
+              Siguiente
             </Box>
           </Button>
         </>

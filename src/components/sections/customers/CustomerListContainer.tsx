@@ -1,17 +1,19 @@
 import { ChangeEvent, MouseEvent, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Button, InputAdornment, Stack } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useGridApiRef } from '@mui/x-data-grid';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import IconifyIcon from 'components/base/IconifyIcon';
+import CustomersTable from 'components/sections/customers/CustomersTable';
 import StyledTextField from 'components/styled/StyledTextField';
-import CustomersTable from './CustomersTable';
 import FilterSection from './filters/FilterSection';
 
 const CustomerListContainer = () => {
   const [filterButtonEl, setFilterButtonEl] = useState<HTMLButtonElement | null>(null);
   const apiRef = useGridApiRef();
+  const navigate = useNavigate();
 
   const handleSearch = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +61,12 @@ const CustomerListContainer = () => {
             spacing={1}
             sx={{ flexGrow: 1, alignItems: 'center', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}
           >
-            <Button variant="contained" color="primary" sx={{ flexShrink: 0 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ flexShrink: 0 }}
+              onClick={() => navigate('/customers/new')}
+            >
               Nuevo cliente
             </Button>
 

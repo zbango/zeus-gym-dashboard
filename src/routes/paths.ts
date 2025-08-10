@@ -18,6 +18,7 @@ export const rootPaths = {
   appsRoot: 'apps',
   customersRoot: 'customers',
   staffRoot: 'users',
+  settingsRoot: 'settings',
 };
 
 const paths = {

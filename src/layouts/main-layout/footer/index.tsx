@@ -33,9 +33,9 @@ const Footer = () => {
           }}
         >
           <Box component="span" whiteSpace="nowrap">
-            Thank you for creating with
+            Consola de Administración
             <Box component="strong" mx={0.5}>
-              Aurora{' '}
+              Zeus Gym{' '}
             </Box>
           </Box>
 
@@ -45,11 +45,11 @@ const Footer = () => {
             </Box>{' '}
             {dayjs().year()} ©
             <Link
-              href="https://themewagon.com/"
+              href="https://tabangos.cloud/"
               target="_blank"
               sx={{ textDecoration: 'none', mx: 0.5 }}
             >
-              ThemeWagon
+              Tabangos Cloud
             </Link>
           </Box>
         </Typography>

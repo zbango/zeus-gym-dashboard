@@ -10,13 +10,13 @@ const TableLabelDisplayedRows = ({ from, to, count }: TableLabelDisplayedRowsPro
   return (
     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
       <Box component="span" sx={{ display: { xs: 'none', sm: 'inline-block' } }}>
-        Showing
+        Mostrando
       </Box>
       <Typography variant="caption" sx={{ fontWeight: 'bold', mx: 0.5 }}>
-        {from}-{to} out of {count}
+        {from}-{to} de {count}
       </Typography>
       <Box component="span" sx={{ display: { xs: 'none', sm: 'inline-block' } }}>
-        items
+        registros
       </Box>
     </Typography>
   );

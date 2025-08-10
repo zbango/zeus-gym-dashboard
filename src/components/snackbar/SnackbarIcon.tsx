@@ -17,7 +17,7 @@ const SnackbarIcon = ({ variant, icon }: SnackbarCloseButtonProps) => {
       variant === 'default' ? vars.palette.action.hoverChannel : vars.palette[variant].mainChannel,
     [variant, vars.palette],
   );
-
+  console.log('color', color);
   return (
     <Stack
       className="notistack-Icon"

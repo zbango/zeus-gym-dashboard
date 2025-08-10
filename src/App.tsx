@@ -19,6 +19,7 @@ const App = () => {
   }, [pathname]);
 
   useLayoutEffect(() => {
+    console.log('mode', mode);
     configDispatch({ type: REFRESH });
   }, [mode]);
 

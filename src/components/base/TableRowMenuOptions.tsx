@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import EllipsisHorizontalIcon from 'components/icons/EllipsisHorizontalIcon';
 
-interface DashboardMenuProps {
+interface TableRowMenuOptionsProps {
   menuItems?: ({
     label: string;
   } & MenuItemProps)[];
@@ -21,7 +21,7 @@ interface DashboardMenuProps {
   sx?: SxProps;
 }
 
-const defaultItems: DashboardMenuProps['menuItems'] = [
+const defaultItems: TableRowMenuOptionsProps['menuItems'] = [
   {
     label: 'Editar',
   },
@@ -31,13 +31,13 @@ const defaultItems: DashboardMenuProps['menuItems'] = [
   },
 ];
 
-const DashboardMenu = ({
+const TableRowMenuOptions = ({
   menuItems = defaultItems,
   icon = <EllipsisHorizontalIcon />,
   size = 'small',
   variant = 'text',
   sx,
-}: DashboardMenuProps) => {
+}: TableRowMenuOptionsProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -111,4 +111,4 @@ const DashboardMenu = ({
   );
 };
 
-export default DashboardMenu;
+export default TableRowMenuOptions;

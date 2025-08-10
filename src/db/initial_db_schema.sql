@@ -221,6 +221,66 @@ for select using (
   )
 );
 
+-- Ensure updated_at exists on all core tables and is maintained automatically
+-- Add updated_at column if missing
+alter table if exists public.user_profiles add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.customers add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.plans add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.memberships add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.payments add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.attendance add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.staff add column if not exists updated_at timestamptz not null default now();
+alter table if exists public.progress_events add column if not exists updated_at timestamptz not null default now();
+
+-- Generic trigger function to update updated_at on row modifications
+create or replace function public.set_updated_at() returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+-- Attach BEFORE UPDATE triggers to keep updated_at fresh
+drop trigger if exists trg_user_profiles_set_updated_at on public.user_profiles;
+create trigger trg_user_profiles_set_updated_at
+before update on public.user_profiles
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_customers_set_updated_at on public.customers;
+create trigger trg_customers_set_updated_at
+before update on public.customers
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_plans_set_updated_at on public.plans;
+create trigger trg_plans_set_updated_at
+before update on public.plans
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_memberships_set_updated_at on public.memberships;
+create trigger trg_memberships_set_updated_at
+before update on public.memberships
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_payments_set_updated_at on public.payments;
+create trigger trg_payments_set_updated_at
+before update on public.payments
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_attendance_set_updated_at on public.attendance;
+create trigger trg_attendance_set_updated_at
+before update on public.attendance
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_staff_set_updated_at on public.staff;
+create trigger trg_staff_set_updated_at
+before update on public.staff
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_progress_events_set_updated_at on public.progress_events;
+create trigger trg_progress_events_set_updated_at
+before update on public.progress_events
+for each row execute function public.set_updated_at();
+
 drop policy if exists progress_events_write on public.progress_events;
 create policy progress_events_write on public.progress_events
 for all using (
