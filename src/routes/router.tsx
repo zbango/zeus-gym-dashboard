@@ -26,6 +26,8 @@ const CustomersPage = lazy(() => import('pages/customers/Customers'));
 const UsersPage = lazy(() => import('pages/users/Users'));
 const PlansSettingsPage = lazy(() => import('pages/settings/Plans'));
 const NewCustomerPage = lazy(() => import('pages/customers/NewCustomer'));
+const StoreProductsPage = lazy(() => import('pages/store/Products'));
+const StoreSellPage = lazy(() => import('pages/store/Sell'));
 
 export const SuspenseOutlet = () => {
   const location = useLocation();
@@ -78,6 +80,22 @@ export const routes: RouteObject[] = [
             element: (
               <RequireRole roles={['admin']}>
                 <UsersPage />
+              </RequireRole>
+            ),
+          },
+          {
+            path: rootPaths.storeRoot,
+            element: (
+              <RequireRole roles={['admin']}>
+                <StoreProductsPage />
+              </RequireRole>
+            ),
+          },
+          {
+            path: rootPaths.sellRoot,
+            element: (
+              <RequireRole roles={['admin']}>
+                <StoreSellPage />
               </RequireRole>
             ),
           },

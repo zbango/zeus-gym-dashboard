@@ -67,7 +67,7 @@ const sitemap: MenuItem[] = [
       {
         name: 'Tienda',
         key: 'store',
-        path: rootPaths.root,
+        path: rootPaths.storeRoot,
         pathName: 'store',
         icon: 'material-symbols:badge-outline',
         active: true,
@@ -86,6 +86,14 @@ const sitemap: MenuItem[] = [
         key: 'customers',
         path: rootPaths.customersRoot,
         pathName: 'customers',
+        icon: 'material-symbols:group-outline-rounded',
+        active: true,
+      },
+      {
+        name: 'Vender productos',
+        key: 'sell',
+        path: rootPaths.sellRoot,
+        pathName: 'sell',
         icon: 'material-symbols:group-outline-rounded',
         active: true,
       },

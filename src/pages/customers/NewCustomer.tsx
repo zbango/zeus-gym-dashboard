@@ -186,7 +186,7 @@ export default function NewCustomer() {
         ]}
       />
       <Paper sx={{ flex: 1, p: { xs: 3, md: 5 } }}>
-        <Stack spacing={3}>
+        <Stack spacing={3} direction="column">
           <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label) => (
               <Step key={label}>
@@ -196,7 +196,7 @@ export default function NewCustomer() {
           </Stepper>
 
           {activeStep === 0 && (
-            <Stack spacing={2}>
+            <Stack spacing={2} direction="column">
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <StyledTextField
                   label="Nombre"
@@ -252,7 +252,7 @@ export default function NewCustomer() {
           )}
 
           {activeStep === 1 && (
-            <Stack spacing={2}>
+            <Stack spacing={2} direction="column">
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <StyledTextField
                   label="Peso (kg)"
@@ -292,7 +292,7 @@ export default function NewCustomer() {
           )}
 
           {activeStep === 2 && (
-            <Stack spacing={2}>
+            <Stack spacing={2} direction="column">
               <StyledTextField
                 select
                 label="Plan"
@@ -331,7 +331,7 @@ export default function NewCustomer() {
           )}
 
           {activeStep === 3 && (
-            <Stack spacing={2}>
+            <Stack spacing={2} direction="column">
               <StyledTextField
                 label="Monto a pagar (USD)"
                 type="number"
