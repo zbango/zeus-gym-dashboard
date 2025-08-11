@@ -145,7 +145,7 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
               color: 'text.secondary',
               fontWeight: 'medium',
               fontSize: 29.5,
-              lineHeight: 1,
+              lineHeight: 1.3,
               margin: 1,
               marginLeft: 0.625,
               letterSpacing: '-.8px',
@@ -163,7 +163,7 @@ const Logo = ({ sx, viewBox = '0 0 26 40', showName = true, ...rest }: LogoProps
             },
           ]}
         >
-          aurora
+          zeus gym
         </Typography>
       )}
     </Link>

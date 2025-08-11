@@ -20,14 +20,8 @@ export default function PaymentMethodSelector(props: {
       <ToggleButton value="cash">
         <IconifyIcon icon="material-symbols:payments-rounded" sx={{ mr: 1 }} /> Efectivo
       </ToggleButton>
-      <ToggleButton value="card">
-        <IconifyIcon icon="material-symbols:credit-card-rounded" sx={{ mr: 1 }} /> Tarjeta
-      </ToggleButton>
       <ToggleButton value="transfer">
         <IconifyIcon icon="material-symbols:account-balance-rounded" sx={{ mr: 1 }} /> Transferencia
-      </ToggleButton>
-      <ToggleButton value="other">
-        <IconifyIcon icon="material-symbols:more-horiz-rounded" sx={{ mr: 1 }} /> Otro
       </ToggleButton>
     </ToggleButtonGroup>
   );
